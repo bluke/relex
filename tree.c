@@ -1,6 +1,6 @@
 //Fonctions pour le traitements des arbres
-#define true 1
-#define false 0
+#define TRUE 1
+#define FALSE 0
 
 
 int empty(Tree t)
@@ -27,11 +27,11 @@ Tree right(Tree t)
 int leaf(Tree t)
 {
 	if(empty(t))
-		return false;
+		return FALSE;
 	else if (empty(left(t))&&empty(right(t)))
-		return true;
+		return TRUE;
 	else
-		return false;
+		return FALSE;
 }
 
 Type type(Tree t)
@@ -46,7 +46,7 @@ char* content(Tree t)
 
 void show(Tree t)
 {
-//	printf("Show du noeud de type : %s\ncontent : %s\n\n",type(t),content(t));
+	printf("Show du noeud de type : %d\ncontent : %s\n\n",type(t),t->content);
 }
 
 Tree new(Type type,char* content)
@@ -54,5 +54,27 @@ Tree new(Type type,char* content)
 	Tree t = malloc(sizeof(struct Tree));
 	t->type=type;
 	t->content=malloc(strlen(content+1));
-	strcpy(content,t->content);
+	strcpy(t->content,content);
+	
+	return t;
+}
+
+void new_right_son(Tree father, Type type, char* content)
+{
+	father->right=new(type, content);
+}
+
+void new_left_son(Tree father, Type type, char* content)
+{
+        father->left=new(type, content);
+}
+
+void attach_left_son(Tree father, Tree son)
+{
+	father->left=son;
+}
+
+void attach_right_son(Tree father, Tree son)
+{
+        father->right=son;
 }
