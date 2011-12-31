@@ -3,7 +3,9 @@
 /* C code to be copied verbatim */
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include "struct.h"
+#include "tree.c"
 
 %}
 %x rules
@@ -13,6 +15,13 @@
 %%
 "%{"*"%}"       ECHO;
 "%%"    BEGIN(rules);
+<rules>\[^[^\]] {printf("trucs entre crochets en negatif\n");}
+<rules>\[^[^\]]\+ {printf("trucs entre crochets avec un plus en negatif\n");}
+<rules>\[^[^\]]\* {printf("trucs entre crochets avec une etoile en negatif\n");}
+<rules>\[[^\]]	{printf("simples trucs entre crochets\n");}
+<rules>\[[^\]]\+	{printf("trucs entre crochets avec un plus\n");}
+<rules>\[[^\]]\* {printf("trucs entre crochets avec une etoile\n");}
+<rules>\[[^\]]\? {printf("trucs entre crochets avec un ?\n");}
 <rules>\^       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>\\	{printf("Saw caractere spe: %s\n", yytext);}
 <rules>\[	{printf("Saw caractere spe: %s\n", yytext);}
