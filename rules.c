@@ -1,9 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "rules.h"
+#include "struct.h"
+
 Tree new_intervalle(char* begin, char* end)
 {
 	Tree t = new(INTERVALLE,"");
 	new_left_son(t,CARACTERE,begin);
 	new_right_son(t,CARACTERE,end);
 	printf("Nouvel intervalle cree\n");
+	tree_show(t,0);
 	return t;
 }
 

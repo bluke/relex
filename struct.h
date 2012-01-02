@@ -1,3 +1,6 @@
+#ifndef STRUCT
+#define STRUCT
+
 typedef struct Tree * Tree;
 typedef enum Type Type;
 
@@ -13,4 +16,4 @@ struct Tree
 	Tree right;
 	Tree left;
 };
-	
+#endif	

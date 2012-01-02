@@ -10,10 +10,10 @@ FGP= $(wildcard *.y)
 PSRC= $(FGP:.y=.c)
 
 SRC= $(wildcard *.c)
-OBJ= $(SRC:.c=.o),$(LSRC:.c=.o),$(PSRC:.c=.o)
+OBJ= $(SRC:.c=.o) $(LSRC:.c=.o) $(PSRC:.c=.o)
 
 
-all: OBJ
+all: $(OBJ)
 	$(CC) -o $(EXEC) $^
 
 %.o: %.c

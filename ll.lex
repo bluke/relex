@@ -4,10 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "rules.h"
+#include "tree.h"
 #include "struct.h"
-#include "tree.c"
-#include "parse.c"
-#include "rules.c"
 
 int i=0,j=0,k=0;
 Tree tabtree[10];
@@ -20,8 +19,8 @@ Tree tabtree[10];
 %option noyywrap
 %%
 "%{"*"%}"       ECHO;
-"%%"    BEGIN(rules);
-<rules>\[	{BEGIN(ensemble);printf("simples trucs entre crochets %s\n",yytext);}
+"%%"    {printf("On commence les regles\n");BEGIN(rules);}
+<rules>\[	{printf("simples trucs entre crochets %s\n",yytext);BEGIN(ensemble);}
 <rules>\[^	{BEGIN(ensemble);printf("simples negatif trucs entre crochets %s\n",yytext);}
 <rules>\\	{printf("Saw \\, on attend un caractere: %s\n", yytext);}
 <rules>\]	{printf("Saw caractere spe: %s\n", yytext);}
@@ -39,12 +38,14 @@ Tree tabtree[10];
 
 <trailer>[a-zA-Z0-9]    ECHO;
 
-<ensemble>.\-.	{printf("Saw un ensemble : %s\n", yytext);tabtree[i]=new_intervalle(&yytext[0],&yytext[2]);i++;}
-<ensemble>"]"	{printf("Saw a ] donc fin d'ensemble : %s\n",yytext);BEGIN(rules);}
+<ensemble>\]	{printf("Saw a ] donc fin d'ensemble : %s\n",yytext);BEGIN(rules);}
 <ensemble>"\n"	{printf("On a vu un \\n au mauvais moment, erreur\n");BEGIN(rules);}
-<ensemble>[a-zA-Z0-9_\-]	{printf("Saw un unique caractere dans un ensemble : %s\n", yytext);}
-<ensemble>[^\\\-]{2,}	{printf("Saw plusieurs caractere dans un ensemble : %s\n", yytext);}
+<ensemble>[a-zA-Z0-9_]	{printf("Saw un unique caractere dans un ensemble : %s\n", yytext);}
 <ensemble>\\.	{printf("Saw a caractere special dans un ensemble");}
+<ensemble>.\-.	{printf("Saw un ensemble : %s\n", yytext);char a[2],b[2];a[1]=b[1]='\0';sscanf(yytext,"%c-%c",a,b);printf("PWETTT!!! %c, %c\n",a[0],b[0]);tabtree[i]=new_intervalle(a,b);i++;}
+<ensemble>.	{printf("Hibou!\n");}
+<ensemble>[a-zA-Z0-9]{-}[(\\)(\-)]{2,}	{printf("Saw plusieurs caractere dans un ensemble : %s\n", yytext);}
+
 %%
 /*** C Code section ***/
 

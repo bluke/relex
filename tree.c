@@ -1,4 +1,6 @@
 //Fonctions pour le traitements des arbres
+#include "tree.h"
+
 #define TRUE 1
 #define FALSE 0
 
@@ -107,7 +109,6 @@ void tree_show(Tree t, int p)
 	}
 	else if(!empty(t))
 	{
-		int i=0;
 		print_space(p);
 		short_show(t);
 		print_space(p);

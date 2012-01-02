@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 void decale(int j, char* t)
 {       
         int i; 
@@ -10,9 +14,6 @@ void decale(int j, char* t)
 void suppr(char c, char* text)
 {
 	int i;
-	char* tmp;
-
-//	tmp=malloc(strlen(text));
 
 	for(i=0;i<strlen(text);i++)
 	{
