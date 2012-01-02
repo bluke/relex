@@ -1,10 +1,16 @@
 EXEC=relex
 CC=gcc -Wall
 LEX= flex
+PAR=bison
+
 FAL= $(wildcard *.lex)
-CSRC= $(FAL:.lex=.c)
+LSRC= $(FAL:.lex=.c)
+
+FGP= $(wildcard *.y)
+PSRC= $(FGP:.y=.c)
+
 SRC= $(wildcard *.c)
-OBJ= $(SRC:.c=.o),$(CSRC:.c=.o)
+OBJ= $(SRC:.c=.o),$(LSRC:.c=.o),$(PSRC:.c=.o)
 
 
 all: OBJ
@@ -15,6 +21,9 @@ all: OBJ
 
 %.c:%.lex
 	$(LEX) -o $@ $<
+
+%.c:%.y
+	$(PAR) -o $@ $< 
 
 clean:
 	rm $(CSRC) $(OBJ) $(EXEC)
