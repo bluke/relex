@@ -43,7 +43,7 @@ void newTrans(Machine M,int source,char c,int dest){
 }
 
 List addDest(List l,int dest){
-	if(l=NULL)
+	if(l==NULL)
 	{
 		List ret=malloc(sizeof(t_list));
 		ret->state=dest;
