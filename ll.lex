@@ -9,6 +9,8 @@
 #include "parse.c"
 #include "rules.c"
 
+int i=0,j=0,k=0;
+Tree tabtree[10];
 
 %}
 %x rules
@@ -37,10 +39,10 @@
 
 <trailer>[a-zA-Z0-9]    ECHO;
 
-<ensemble>.\-.	{printf("Saw un ensemble : %s\n", yytext);}
+<ensemble>.\-.	{printf("Saw un ensemble : %s\n", yytext);tabtree[i]=new_intervalle(&yytext[0],&yytext[2]);i++;}
 <ensemble>"]"	{printf("Saw a ] donc fin d'ensemble : %s\n",yytext);BEGIN(rules);}
 <ensemble>"\n"	{printf("On a vu un \\n au mauvais moment, erreur\n");BEGIN(rules);}
-<ensemble>[a-zA-Z_\-]	{printf("Saw un unique caractere dans un ensemble : %s\n", yytext);}
+<ensemble>[a-zA-Z0-9_\-]	{printf("Saw un unique caractere dans un ensemble : %s\n", yytext);}
 <ensemble>[^\\\-]{2,}	{printf("Saw plusieurs caractere dans un ensemble : %s\n", yytext);}
 <ensemble>\\.	{printf("Saw a caractere special dans un ensemble");}
 %%
@@ -73,7 +75,11 @@ int main(void)
     t=new(REGLE,"master Regle de test");
 
     Tree tt=new_intervalle("a","z");
-    new_family(new(CARACTERE,"_"),t,tt);
+    Tree ttt=new(UNION,"");
+    Tree tttt=new(PLUS,"");
+    new_family(tt,ttt,new(CARACTERE,"_"));
+    attach_left_son(tttt,ttt);
+    attach_left_son(t,tttt);
     tree_show(t,0);
 
     yylex();

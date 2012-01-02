@@ -87,7 +87,7 @@ void short_show(Tree t)
 {
 	printf("(");
 	print_type(t);
-	printf(")");
+	printf(") ");
 	printf("%s",t->content);
 }
 
@@ -117,8 +117,8 @@ void tree_show(Tree t, int p)
 		printf("|- ");
 		tree_show(right(t),p+2);
 	}
-	else
-		printf("\nFin de l'arbre\n");
+	else if(empty(t))
+		printf("(Vide)");
 }
 
 
