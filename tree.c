@@ -2,7 +2,6 @@
 #define TRUE 1
 #define FALSE 0
 
-
 int empty(Tree t)
 {
 	return t == NULL;
@@ -22,6 +21,14 @@ Tree right(Tree t)
                 return NULL;
         else
                 return t->right;
+}
+
+int isfinal(Tree t)
+{
+	if(empty(left(t))&&empty(right(t))&&!empty(t))
+		return TRUE;
+	else
+		return FALSE;
 }
 
 int leaf(Tree t)
@@ -46,16 +53,81 @@ char* content(Tree t)
 
 void show(Tree t)
 {
-	printf("Show du noeud de type : %d\ncontent : %s\n\n",type(t),t->content);
+	if(empty(t))
+		printf("Arbre vide\n");
+	else
+		printf("Show du noeud de type : %d\ncontent : %s\n\n",type(t),t->content);
 }
+
+void print_type(Tree t)
+{
+	Type ty=t->type;
+
+	if(ty == REGLE)
+		printf("Regle");
+	else if(ty==CONCAT)
+		printf("Concat");
+        else if(ty==OR)
+	        printf("Or");
+        else if(ty==PLUS)
+		printf("Plus");
+        else if(ty==ETOILE)
+		printf("Etoile");
+        else if(ty==CARACTERE)
+		printf("Caractere");
+        else if(ty==ENSEMBLE)
+		printf("Ensemble");
+        else if(ty==INTERVALLE)
+		printf("Intervalle");
+	else
+		printf("TYpe inconnu");
+}
+
+void short_show(Tree t)
+{
+	printf("(");
+	print_type(t);
+	printf(")");
+	printf("%s",t->content);
+}
+
+void print_space(int k)
+{
+	printf("\n");
+	int i;
+	for(i=0;i<k;i++)
+		printf(" ");
+}
+
+void tree_show(Tree t, int p)
+{
+	if(isfinal(t))
+	{
+		short_show(t);
+	}
+	else if(!empty(t))
+	{
+		int i=0;
+		print_space(p);
+		short_show(t);
+		print_space(p);
+		printf("|- ");
+		tree_show(left(t),p+2);
+        	print_space(p);
+		printf("|- ");
+		tree_show(right(t),p+2);
+	}
+	else
+		printf("\nFin de l'arbre\n");
+}
+
 
 Tree new(Type type,char* content)
 {
-	Tree t = malloc(sizeof(struct Tree));
+	Tree t = (Tree)malloc(sizeof(struct Tree));
 	t->type=type;
-	t->content=malloc(strlen(content+1));
+	t->content=(char*)malloc(strlen(content+1));
 	strcpy(t->content,content);
-	
 	return t;
 }
 
