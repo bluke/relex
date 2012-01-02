@@ -3,7 +3,7 @@ typedef enum Type Type;
 
 enum Type
 {
-    REGLE, CONCAT, OR, PLUS, ETOILE, CARACTERE, ENSEMBLE, INTERVALLE
+    REGLE, UNION, OR, PLUS, ETOILE, CARACTERE, ENSEMBLE, INTERVALLE
 };
 
 struct Tree

@@ -7,6 +7,8 @@
 #include "struct.h"
 #include "tree.c"
 #include "parse.c"
+#include "rules.c"
+
 
 %}
 %x rules
@@ -18,7 +20,7 @@
 "%{"*"%}"       ECHO;
 "%%"    BEGIN(rules);
 <rules>\[	{BEGIN(ensemble);printf("simples trucs entre crochets %s\n",yytext);}
-<rules>\[^       {BEGIN(ensemble);printf("simples negatif trucs entre crochets %s\n",yytext);}
+<rules>\[^	{BEGIN(ensemble);printf("simples negatif trucs entre crochets %s\n",yytext);}
 <rules>\\	{printf("Saw \\, on attend un caractere: %s\n", yytext);}
 <rules>\]	{printf("Saw caractere spe: %s\n", yytext);}
 <rules>\.       {printf("Saw un point, on attend tout: %s\n", yytext);}
@@ -30,12 +32,17 @@
 <rules>\)       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>[a-zA-Z0-9]       {printf("Saw a truc: %s\n", yytext);}
 <rules>"%%"     BEGIN(trailer);
-<rules>"\n"       {printf("Saw a /n donc fin de la règle en cours %s\n", yytext);}
+<rules>"\n"	{printf("Saw a /n donc fin de la règle en cours %s\n", yytext);}
+<rules>"\t"	{printf("Saw a /t, on passe donc a l'action\n");}
+
 <trailer>[a-zA-Z0-9]    ECHO;
+
 <ensemble>.\-.	{printf("Saw un ensemble : %s\n", yytext);}
 <ensemble>"]"	{printf("Saw a ] donc fin d'ensemble : %s\n",yytext);BEGIN(rules);}
 <ensemble>"\n"	{printf("On a vu un \\n au mauvais moment, erreur\n");BEGIN(rules);}
-<ensemble>.	{printf("Saw a caractere dans un ensemble : %s\n", yytext);}
+<ensemble>[a-zA-Z_\-]	{printf("Saw un unique caractere dans un ensemble : %s\n", yytext);}
+<ensemble>[^\\\-]{2,}	{printf("Saw plusieurs caractere dans un ensemble : %s\n", yytext);}
+<ensemble>\\.	{printf("Saw a caractere special dans un ensemble");}
 %%
 /*** C Code section ***/
 
@@ -45,7 +52,7 @@ int main(void)
     /* Call the lexer, then quit. */
     printf("coucou\n");
     t=new(REGLE,"master Regles test je sais pas");
-    printf("On crée un fils\n");
+/*    printf("On crée un fils\n");
     new_left_son(t,OR,"pwet");
     printf("Encore un\n");
     new_left_son(left(t),CARACTERE,"A");
@@ -62,6 +69,13 @@ int main(void)
     char p[7] = "[u[o]u";
     test(p);
     printf("au revoir\n");
+*/
+    t=new(REGLE,"master Regle de test");
+
+    Tree tt=new_intervalle("a","z");
+    new_family(new(CARACTERE,"_"),t,tt);
+    tree_show(t,0);
+
     yylex();
     return 0;
 }

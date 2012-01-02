@@ -65,8 +65,8 @@ void print_type(Tree t)
 
 	if(ty == REGLE)
 		printf("Regle");
-	else if(ty==CONCAT)
-		printf("Concat");
+	else if(ty==UNION)
+		printf("Union");
         else if(ty==OR)
 	        printf("Or");
         else if(ty==PLUS)
