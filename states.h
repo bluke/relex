@@ -1,11 +1,12 @@
 #ifndef _STATES_H_
 #define _STATES_H_
 
-typedef enum {D,I} Type;
+typedef enum {D,I} Det;
 
 typedef struct {
 	int	name;
 	int	transition[255];
+	char	*code;
 	} *State,t_state;
 
 typedef struct maillon{
@@ -16,6 +17,7 @@ typedef struct maillon{
 typedef struct {
 	int 	name;
 	List	transition[255];
+	char	*code;
 	} *Istate,t_istate;
 
 typedef union{
@@ -25,14 +27,14 @@ typedef union{
 
 typedef struct {
 	int 	size;
-	Type	type;
+	Det	type;
 	Eta	*etats;
 	} *Machine,t_machine;
 
 
 
-Machine newMachine(Type);
-int newState(Machine);
+Machine newMachine(Det);
+int newState(Machine,char*);
 void newTrans(Machine,int,char,int);
 List addDest(List,int);
 

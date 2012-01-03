@@ -1,7 +1,7 @@
 #include "states.h"
 #include <stdlib.h>
 
-Machine newMachine(Type t){
+Machine newMachine(Det t){
 
 	Machine ret=NULL;
 	ret=malloc(sizeof(t_machine));
@@ -12,7 +12,7 @@ Machine newMachine(Type t){
 	return ret;
 }
 
-int newState(Machine M){
+int newState(Machine M,char *code){
 
 	M->size+=1;
 	M->etats=realloc(M->etats,M->size*sizeof(Eta));
@@ -20,10 +20,12 @@ int newState(Machine M){
 	case(D):
 		M->etats[(M->size)-1].d=calloc(1,sizeof(t_state));
 		M->etats[(M->size)-1].d->name=(M->size);
+		M->etats[(M->size)-1].d->code=code;
 		break;
 	case(I):
 		M->etats[(M->size)-1].i=calloc(1,sizeof(t_istate));
                 M->etats[(M->size)-1].i->name=(M->size);
+		M->etats[(M->size)-1].i->code=code;
                 break;
 	}
 
