@@ -3,64 +3,64 @@
 #include "states.h"
 
 
-void fsmp(Machine M){
+void fsmp(Machine M,FILE *fd){
 	Det t=M->type;
 	int i;
 	
-	printf("\nAutomate à %d états \n",M->size);
+	fprintf(fd,"\nAutomate à %d états \n",M->size);
 	
 	for(i=0;i<M->size;i++)
-		printState(M->etats[i],t);
+		printState(M->etats[i],t,fd);
 	
-	printf("\n");
+	fprintf(fd,"\n");
 
 }
 
 
-void printState(Eta etat,Det type){
+void printState(Eta etat,Det type,FILE *fd){
 	
 	char i;
 	
 	switch(type){
 		case(D):
-			printf("Etat %d\n",etat.d->name);
+			fprintf(fd,"Etat %d\n",etat.d->name);
 			for(i=33;i<127;i++)
 				if(etat.d->transition[i]!=0)
-					printf("\t\'%c\'->%d\n",i,etat.d->transition[i]);
+					fprintf(fd,"\t\'%c\'->%d\n",i,etat.d->transition[i]);
 			if(etat.d->transition[' ']!=0)
-				printf("\t\' \'->%d\n",etat.d->transition[' ']);
+				fprintf(fd,"\t\' \'->%d\n",etat.d->transition[' ']);
 			if(etat.d->code!=NULL)
-				printf("\tEtat Final : %s\n",etat.d->code);
+				fprintf(fd,"\tEtat Final : %s\n",etat.d->code);
 			break;
 		case(I):
-			printf("Etat %d\n",etat.i->name);
+			fprintf(fd,"Etat %d\n",etat.i->name);
 			for(i=33;i<127;i++)
 				if(etat.i->transition[i]!=NULL){
-					printf("\t\'%c\'->",i);
-					printList(etat.i->transition[i]);
+					fprintf(fd,"\t\'%c\'->",i);
+					printList(etat.i->transition[i],fd);
 				}
 			if(etat.i->transition[' ']!=NULL){
-					printf("\t\' \'->");
-					printList(etat.i->transition[' ']);
+					fprintf(fd,"\t\' \'->");
+					printList(etat.i->transition[' '],fd);
 				}
 			if(etat.i->transition['\0']!=NULL){
-					printf("\tEpsilon->");
-					printList(etat.i->transition['\0']);
+					fprintf(fd,"\tEpsilon->");
+					printList(etat.i->transition['\0'],fd);
 				}
 			if(etat.i->code!=NULL)
-				printf("\tEtat Final : %s\n",etat.i->code);
+				fprintf(fd,"\tEtat Final : %s\n",etat.i->code);
 			break;
 	}
 	
 }
 
-void printList(List l){
+void printList(List l,FILE *fd){
 	
 	if(l==NULL)
-		printf("\n");
+		fprintf(fd,"\n");
 	else
 	{
-		printf(" %d",l->state);
-		printList(l->next);
+		fprintf(fd," %d",l->state);
+		printList(l->next,fd);
 	}
 }

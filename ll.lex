@@ -18,6 +18,8 @@ Tree rule[20];
 Tree ensemble_tree[10];
 Tree tmp;
 
+FILE *out;
+
 char rule_buff_action[1000];
 
 %}
@@ -30,7 +32,7 @@ char rule_buff_action[1000];
 
 %%
 
-"%{"*"%}"       ECHO;
+"%{"*"%}"       fprintf(out,"%s",yytext);;
 "%%\n"    {printf("On commence les regles\n");BEGIN(rules);}
 
 <rules>\[	{
@@ -80,7 +82,7 @@ char rule_buff_action[1000];
 				ensemble_tree[cpt_ensemble]=new(CARACTERE,yytext);
 				cpt_ensemble++;
 			}
-<rules>"%%\n"     {Machine M=ruleImachine(rule);fsmp(M);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
+<rules>"%%\n"     {Machine M=ruleImachine(rule);fsmp(M,out);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
 <rules>"\n"	{
 			if(is_or)
 			{
@@ -105,7 +107,7 @@ char rule_buff_action[1000];
 <action>"}"	{printf("C'est la fin de l'action\n");BEGIN(rules);}
 <action>[^}]*	{strcpy(rule_buff_action,yytext);}
 
-<trailer>[a-zA-Z0-9]    ECHO;
+<trailer>.*    fprintf(out,"%s\n",yytext);;
 
 <ensemble>\]	{
 			printf("Saw a ] donc fin d'ensemble : %s\n",yytext);
@@ -139,27 +141,12 @@ char rule_buff_action[1000];
 
 int main(void)
 {
-    Tree t;
+	out=fopen("relex.c","w");
+
     /* Call the lexer, then quit. */
     printf("coucou\n");
-    
-    t=new(REGLE,"master Regle de test");
-
-    Tree tt=new_intervalle("a","z");
-    Tree ttt=new(ENSEMBLE,"");
-    Tree tttt=new(PLUS,"");
-    new_family(tt,ttt,new(CARACTERE,"_"));
-    attach_left_son(tttt,ttt);
-    attach_left_son(t,tttt);
-    tree_show(t,0);
-
-    Tree *rule;
-	rule=calloc(20,sizeof(Tree));
-	rule[1]=t;
-    Machine M;
-	M=ruleImachine(rule);
-	fsmp(M);
 
     yylex();
+	fclose(out);
     return 0;
 }

@@ -26,4 +26,4 @@ all: $(OBJ)
 	$(PAR) -o $@ $< 
 
 clean:
-	rm $(CSRC) $(OBJ) $(EXEC)
+	rm $(CSRC) $(OBJ) $(EXEC) relex.c
