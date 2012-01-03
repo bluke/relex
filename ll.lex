@@ -80,8 +80,8 @@ char rule_buff_action[1000];
 				ensemble_tree[cpt_ensemble]=new(CARACTERE,yytext);
 				cpt_ensemble++;
 			}
-<rules>"%%\n"     {Machine M=ruleImachine(rule);fsmp(M);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
-<rules>"\n"	{
+<rules>"%%\n"     {printf("C'est la fin, on va dans le trailer\n");BEGIN(trailer);}
+<rules>"}\n"	{
 			if(is_or)
 			{
 				ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble, UNION,begin);
@@ -102,7 +102,7 @@ char rule_buff_action[1000];
 			cpt_ensemble=0;
 		}
 <rules>"\t{"	{printf("Saw a /t, on passe donc a l'action\n");BEGIN(action);}
-<action>"}"	{printf("C'est la fin de l'action\n");BEGIN(rules);}
+
 <action>[^}]*	{strcpy(rule_buff_action,yytext);}
 
 <trailer>[a-zA-Z0-9]    ECHO;
@@ -137,7 +137,7 @@ char rule_buff_action[1000];
 %%
 /*** C Code section ***/
 
-int main(void)
+int main(int argc, char* argv[])
 {
     Tree t;
     /* Call the lexer, then quit. */
@@ -155,7 +155,7 @@ int main(void)
 
     Tree *rule;
 	rule=calloc(20,sizeof(Tree));
-	rule[1]=t;
+	rule[0]=t;
     Machine M;
 	M=ruleImachine(rule);
 	fsmp(M);
