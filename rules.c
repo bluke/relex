@@ -52,15 +52,15 @@ Tree empile_tree(Tree ensemble_tree[], int* cpt_ensemble, Type type, int begin)
 	else
 	{	//attach_left_son(dest,ensemble_tree[begin]);
 		//rien à faire, il n'y a qu'un ensemble, il n'y a rien à empiler
-		if(type==ENSEMBLE)
+		if(type==ENSEMBLE||type==OR)
 		{
-			printf("Ensemble\n");
+			printf("Ensemble ou Or\n");
 			tmp=new_union(ensemble_tree[begin],NULL,type);
 		}
 		else
 		{
 			printf("Autre\n");
-			tmp=ensemble_tree[0];
+			tmp=ensemble_tree[begin];
 		}
 
 	}
@@ -69,6 +69,6 @@ Tree empile_tree(Tree ensemble_tree[], int* cpt_ensemble, Type type, int begin)
 	printf("Fin de l'empilage en cours, on remet cpt_ensemble a jour et on affiche l'abre ainsi créé\ncpt_ensemble=%d et begin=%d\n",*cpt_ensemble,begin);
 	tree_show(tmp,0);
 	printf("\n");
-//	*cpt_rules++;//On peut passer à la nouvelle règle
+	
 	return tmp;
 }
