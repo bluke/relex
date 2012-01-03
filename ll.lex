@@ -27,12 +27,15 @@ char rule_buff_action[1000];
 %x trailer
 %x ensemble
 %x action
+%x header
 /* This tells flex to read only one input file */
 %option noyywrap
 
 %%
 
-"%{"*"%}"       fprintf(out,"%s",yytext);;
+"%{"	{BEGIN(header);}
+<header>"%}"	{ printf("Fin du header\n");BEGIN(INITIAL);}
+<header>[^%]*      { fprintf(out,"%s",yytext);}
 "%%\n"    {printf("On commence les regles\n");BEGIN(rules);}
 
 <rules>\[	{
