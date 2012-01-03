@@ -8,20 +8,32 @@
 #include "tree.h"
 #include "struct.h"
 
-int i=0,j=0,k=0;
-Tree tabtree[10];
+int i=0,j=0,k=0, cpt_ensemble=0, cpt_rules=0;
+
+Tree rule[20];
+Tree ensemble_tree[10];
+Tree tmp;
 
 %}
 %x rules
 %x trailer
 %x ensemble
+%x action
 /* This tells flex to read only one input file */
 %option noyywrap
+
 %%
+
 "%{"*"%}"       ECHO;
 "%%"    {printf("On commence les regles\n");BEGIN(rules);}
-<rules>\[	{printf("simples trucs entre crochets %s\n",yytext);BEGIN(ensemble);}
-<rules>\[^	{BEGIN(ensemble);printf("simples negatif trucs entre crochets %s\n",yytext);}
+
+<rules>\[	{
+			printf("simples trucs entre crochets %s\n",yytext);
+			BEGIN(ensemble);
+			ensemble_tree[cpt_ensemble]=new(ENSEMBLE,"[]");
+			cpt_ensemble++;
+		}
+<rules>\[^	{printf("simples negatif trucs entre crochets %s\n",yytext);BEGIN(ensemble);}
 <rules>\\	{printf("Saw \\, on attend un caractere: %s\n", yytext);}
 <rules>\]	{printf("Saw caractere spe: %s\n", yytext);}
 <rules>\.       {printf("Saw un point, on attend tout: %s\n", yytext);}
@@ -32,9 +44,29 @@ Tree tabtree[10];
 <rules>\(       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>\)       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>[a-zA-Z0-9]       {printf("Saw a truc: %s\n", yytext);}
-<rules>"%%"     BEGIN(trailer);
-<rules>"\n"	{printf("Saw a /n donc fin de la règle en cours %s\n", yytext);}
-<rules>"\t"	{printf("Saw a /t, on passe donc a l'action\n");}
+<rules>"%%"     {printf("C'est la fin, on va dans le trailer\n");BEGIN(trailer);}
+<rules>"\n"	{
+			rule[cpt_rules]=new(REGLE,"");
+			if(cpt_ensemble>=2)
+			{
+				//On fait l'union des deux derniers
+				tmp=new_union(ensemble_tree[cpt_ensemble-1],ensemble_tree[cpt_ensemble-2],UNION);
+				for(i=cpt_ensemble-3;i>0;i--)//On souhaite ratacher tous les autres ensembles entre eux
+				{
+					tmp=new_union(ensemble_tree[i],tmp,UNION);
+				}
+				//Pour finir on attache l'ensemble à la règle qui est ainsi formée
+				attach_left_son(rule[cpt_rules],tmp);
+			}
+			else
+				attach_left_son(rule[cpt_rules],ensemble_tree[0]);
+				
+			cpt_rules++;//On peut passer à la nouvelle règle
+			cpt_ensemble=0;//En recommençant le compteur d'ensemble
+			printf("Saw a /n donc fin de la regle en cours, on remet cpt_ensemble a 0 et on affiche l'abre ainsi créé\n");
+			tree_show(rule[0],0);
+		}
+<rules>"\t"	{printf("Saw a /t, on passe donc a l'action\n");BEGIN(action);}
 
 <trailer>[a-zA-Z0-9]    ECHO;
 
@@ -42,7 +74,15 @@ Tree tabtree[10];
 <ensemble>"\n"	{printf("On a vu un \\n au mauvais moment, erreur\n");BEGIN(rules);}
 <ensemble>[a-zA-Z0-9_]	{printf("Saw un unique caractere dans un ensemble : %s\n", yytext);}
 <ensemble>\\.	{printf("Saw a caractere special dans un ensemble");}
-<ensemble>.\-.	{printf("Saw un ensemble : %s\n", yytext);char a[2],b[2];a[1]=b[1]='\0';sscanf(yytext,"%c-%c",a,b);printf("PWETTT!!! %c, %c\n",a[0],b[0]);tabtree[i]=new_intervalle(a,b);i++;}
+<ensemble>.\-.	{
+			printf("Saw un ensemble : %s\n", yytext);
+			char a[2],b[2];
+			a[1]=b[1]='\0';
+			sscanf(yytext,"%c-%c",a,b);
+			printf("PWETTT!!! %c, %c\n",a[0],b[0]);
+			ensemble_tree[cpt_ensemble]=new_intervalle(a,b);
+			cpt_ensemble++;
+		}
 <ensemble>.	{printf("Hibou!\n");}
 <ensemble>[a-zA-Z0-9]{-}[(\\)(\-)]{2,}	{printf("Saw plusieurs caractere dans un ensemble : %s\n", yytext);}
 
