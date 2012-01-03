@@ -81,6 +81,8 @@ void print_type(Tree t)
 		printf("Ensemble");
         else if(ty==INTERVALLE)
 		printf("Intervalle");
+	else if(ty==INTERROGATION)
+		printf("?");
 	else
 		printf("TYpe inconnu");
 }

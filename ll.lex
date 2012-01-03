@@ -103,6 +103,28 @@ char rule_buff_action[1000];
 		}
 <rules>"\t{"	{printf("Saw a /t, on passe donc a l'action\n");BEGIN(action);}
 
+<action>"}\n"	{
+			if(is_or)
+			{
+				ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble, UNION,begin);
+				begin++;
+				cpt_ensemble++;
+				printf("Il faut d'abrod empiler les OR avant d'empiler la regle\n");
+				ensemble_tree[0]=empile_tree(ensemble_tree,&cpt_ensemble,OR,0);
+				begin++;
+				is_or=0;
+			}
+			rule[cpt_rules]=new(REGLE,rule_buff_action);	
+			attach_left_son(rule[cpt_rules],empile_tree(ensemble_tree,&cpt_ensemble, UNION,0));
+
+			printf("Fin de la regle, on affiche : \n");
+			tree_show(rule[cpt_rules],0);
+			cpt_rules++;
+			begin=0;
+			cpt_ensemble=0;
+			BEGIN(rules);
+		}
+
 <action>[^}]*	{strcpy(rule_buff_action,yytext);}
 
 <trailer>[a-zA-Z0-9]    ECHO;
