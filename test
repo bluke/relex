@@ -1,0 +1,8 @@
+%{ mon entete %}
+%%
+[a-z_]+	{ return ID; }
+int|let	{ return KW; }
+[a-zA-Z][a-zA-Z_]*	{ printf("VAR\n"); }
+\^\-\\	{ printf("SPECIAL\n"); }
+%%
+  mon trailer
