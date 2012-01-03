@@ -10,6 +10,7 @@
 #include "automaton-builder.h"
 
 int i=0,j=0,k=0, cpt_ensemble=0, cpt_rules=0,begin=0;
+int is_or=0;
 
 Tree rule[20];
 Tree ensemble_tree[10];
@@ -68,7 +69,13 @@ char rule_buff_action[1000];
 			ensemble_tree[cpt_ensemble-1]=new_union(ensemble_tree[cpt_ensemble-1],NULL,ETOILE);
 			
 		}
-<rules>\|       {printf("Saw un | : %s\n", yytext);}
+<rules>\|       {
+			/*is_or=1;printf("Saw un | : %s\nOn empile ce qu'on a avant le OR", yytext);
+			empile_tree(ensemble_tree,&cpt_ensemble, UNION,0);
+			begin++;
+			cpt_ensemble++;*/
+				
+		}
 <rules>\(       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>\)       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>[ a-zA-Z0-9]	{
@@ -78,8 +85,12 @@ char rule_buff_action[1000];
 			}
 <rules>"%%"     {printf("C'est la fin, on va dans le trailer\n");BEGIN(trailer);}
 <rules>"\n"	{
-			
-			
+			if(is_or)
+			{
+				//Il faut d'abrod empiler les OR avant d'empiler la regle
+				ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble,OR,begin);
+				is_or=0;
+			}
 			rule[cpt_rules]=new(REGLE,rule_buff_action);	
 			attach_left_son(rule[cpt_rules],empile_tree(ensemble_tree,&cpt_ensemble, UNION,0));
 
@@ -98,9 +109,9 @@ char rule_buff_action[1000];
 <ensemble>\]	{
 			printf("Saw a ] donc fin d'ensemble : %s\n",yytext);
 			BEGIN(rules);
-			printf("On empile ce qu'on a deja\n");
+			printf("On empile deja ce qu'on a dans l'ensemble\n");
 			ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble,ENSEMBLE,begin);
-			printf("On a empilé dans la case %d\n",begin);
+			printf("On a empilé ce qu'on a dans l'ensemble dans la case %d\n",begin);
 			begin++;
 			cpt_ensemble++;
 		}
