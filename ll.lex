@@ -78,7 +78,7 @@ char rule_buff_action[1000];
 				ensemble_tree[cpt_ensemble]=new(CARACTERE,yytext);
 				cpt_ensemble++;
 			}
-<rules>"%%"     {printf("C'est la fin, on va dans le trailer\n");BEGIN(trailer);}
+<rules>"%%"     {Machine M=ruleImachine(rule);fsmp(M);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
 <rules>"\n"	{
 			
 			
@@ -163,7 +163,7 @@ int main(void)
 
     Tree *rule;
 	rule=calloc(20,sizeof(Tree));
-	rule[0]=t;
+	rule[1]=t;
     Machine M;
 	M=ruleImachine(rule);
 	fsmp(M);

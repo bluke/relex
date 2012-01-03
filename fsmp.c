@@ -12,6 +12,8 @@ void fsmp(Machine M){
 	for(i=0;i<M->size;i++)
 		printState(M->etats[i],t);
 	
+	printf("\n");
+
 }
 
 
@@ -28,7 +30,7 @@ void printState(Eta etat,Det type){
 			if(etat.d->transition[' ']!=0)
 				printf("\t\' \'->%d\n",etat.d->transition[' ']);
 			if(etat.d->code!=NULL)
-				printf("\tEtat Final : %s",etat.d->code);
+				printf("\tEtat Final : %s\n",etat.d->code);
 			break;
 		case(I):
 			printf("Etat %d\n",etat.i->name);
@@ -46,7 +48,7 @@ void printState(Eta etat,Det type){
 					printList(etat.i->transition['\0']);
 				}
 			if(etat.i->code!=NULL)
-				printf("\tEtat Final : %s",etat.i->code);
+				printf("\tEtat Final : %s\n",etat.i->code);
 			break;
 	}
 	
