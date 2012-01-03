@@ -8,6 +8,8 @@
 #include "tree.h"
 #include "struct.h"
 #include "automaton-builder.h"
+#include "fsmp.h"
+
 
 int i=0,j=0,k=0, cpt_ensemble=0, cpt_rules=0;
 
@@ -160,6 +162,7 @@ int main(void)
 	rule[0]=t;
     Machine M;
 	M=ruleImachine(rule);
+	fsmp(M);
 
     yylex();
     return 0;
