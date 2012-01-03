@@ -1,0 +1,3 @@
+Machine M;
+	M=ruleImachine(rule);
+	fsmp(M);
