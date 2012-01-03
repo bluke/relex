@@ -7,6 +7,7 @@
 #include "rules.h"
 #include "tree.h"
 #include "struct.h"
+#include "automaton-builder.h"
 
 int i=0,j=0,k=0, cpt_ensemble=0, cpt_rules=0;
 
@@ -147,12 +148,18 @@ int main(void)
     t=new(REGLE,"master Regle de test");
 
     Tree tt=new_intervalle("a","z");
-    Tree ttt=new(UNION,"");
+    Tree ttt=new(ENSEMBLE,"");
     Tree tttt=new(PLUS,"");
     new_family(tt,ttt,new(CARACTERE,"_"));
     attach_left_son(tttt,ttt);
     attach_left_son(t,tttt);
     tree_show(t,0);
+
+    Tree *rule;
+	rule=calloc(20,sizeof(Tree));
+	rule[0]=t;
+    Machine M;
+	M=ruleImachine(rule);
 
     yylex();
     return 0;

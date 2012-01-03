@@ -1,5 +1,5 @@
 EXEC=relex
-CC=gcc -Wall
+CC=gcc -g -Wall
 LEX= flex
 PAR=bison
 

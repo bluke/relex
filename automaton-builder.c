@@ -89,7 +89,7 @@ int recRuling(Machine M,int pos,Tree deriv){
 					newTrans(M,gauche,'\0',new);
 					if(!empty(right(deriv))){
 						droite=recRuling(M,pos,right(deriv));
-						newTrans(M,gauche,'\0',new);
+						newTrans(M,droite,'\0',new);
 					}
 					return new;
 					break;
