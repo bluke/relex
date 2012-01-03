@@ -25,33 +25,50 @@ Tree new_union(Tree left, Tree right, Type type)
 	Tree t = new(type,"");
 	attach_left_son(t,left);
 	attach_right_son(t, right);
-	printf("Nouvelle Union cree\n");
+	printf("Nouvelle Union cree (");
+	print_type(t);
+	printf(")\n");
 	return t;
 }
-/*
-Tree empile_tree(Tree ensemble_tree[], int* cpt_ensemble, Type type)
+
+Tree empile_tree(Tree ensemble_tree[], int* cpt_ensemble, Type type, int begin)
 {
 	int i;
 	Tree tmp;
-	Tree dest=new(type,"");
-	if(*cpt_ensemble>=2)
+	//Tree dest=new(type,"");
+	printf("Appel de la fonction empile avec cpt_ensemble=%d et begin =%d\n",*cpt_ensemble,begin);
+	if(*cpt_ensemble-begin>=2)
 	{
+		printf("\nW00t\n");
 		//On fait l'union des deux derniers
-		tmp=new_union(ensemble_tree[*cpt_ensemble-2],ensemble_tree[*cpt_ensemble-1],UNION);
-		for(i=*cpt_ensemble-3;i>=0;i--)//On souhaite ratacher tous les autres ensembles entre eux
+		tmp=new_union(ensemble_tree[*cpt_ensemble-2],ensemble_tree[*cpt_ensemble-1],type);
+		for(i=*cpt_ensemble-3;i>=begin;i--)//On souhaite ratacher tous les autres ensembles entre eux
 		{
-			tmp=new_union(ensemble_tree[i],tmp,UNION);
+			tmp=new_union(ensemble_tree[i],tmp,type);
 		}
 		//Pour finir on attache l'ensemble à la règle qui est ainsi formée
-		attach_left_son(dest,tmp);
+		//attach_left_son(dest,tmp);
 	}
 	else
-		attach_left_son(dest,ensemble_tree[0]);
-		
+	{	//attach_left_son(dest,ensemble_tree[begin]);
+		//rien à faire, il n'y a qu'un ensemble, il n'y a rien à empiler
+		if(type==ENSEMBLE)
+		{
+			printf("Ensemble\n");
+			tmp=new_union(ensemble_tree[begin],NULL,type);
+		}
+		else
+		{
+			printf("Autre\n");
+			tmp=ensemble_tree[0];
+		}
+
+	}
 			
-	*cpt_ensemble=0;//En recommençant le compteur d'ensemble
-	printf("Saw a /n donc fin de la regle en cours, on remet cpt_ensemble a 0 et on affiche l'abre ainsi créé\n");
-	tree_show(dest,0);
+	*(cpt_ensemble)=begin;//En recommençant le compteur d'ensemble
+	printf("Fin de l'empilage en cours, on remet cpt_ensemble a jour et on affiche l'abre ainsi créé\ncpt_ensemble=%d et begin=%d\n",*cpt_ensemble,begin);
+	tree_show(tmp,0);
+	printf("\n");
 //	*cpt_rules++;//On peut passer à la nouvelle règle
-	return dest;
-}*/
+	return tmp;
+}
