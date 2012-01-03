@@ -9,7 +9,7 @@ Machine ruleImachine(Tree rules[20]){
 	newState(M,NULL);
 	int i;
 
-	for(i=1;rules[i]!=NULL;i++)
+	for(i=0;rules[i]!=NULL;i++)
 		addRule(M,rules[i]);
 
 	return M;
