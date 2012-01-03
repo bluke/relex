@@ -82,7 +82,7 @@ char rule_buff_action[1000];
 				ensemble_tree[cpt_ensemble]=new(CARACTERE,yytext);
 				cpt_ensemble++;
 			}
-<rules>"%%\n"     {Machine M=ruleImachine(rule);fsmp(M,out);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
+<rules>"%%\n"     {Machine M=ruleImachine(rule);fprintf(out,"\n/*\n");fsmp(M,out);fprintf(out,"*/\n");printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
 <rules>"\n"	{
 			if(is_or)
 			{
