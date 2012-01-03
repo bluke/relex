@@ -127,7 +127,7 @@ Tree new(Type type,char* content)
 {
 	Tree t = (Tree)malloc(sizeof(struct Tree));
 	t->type=type;
-	t->content=(char*)malloc(strlen(content+1));
+	t->content=(char*)malloc(strlen(content));
 	strcpy(t->content,content);
 	return t;
 }

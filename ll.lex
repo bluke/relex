@@ -12,6 +12,7 @@
 
 
 int i=0,j=0,k=0, cpt_ensemble=0, cpt_rules=0,begin=0;
+int is_or=0;
 
 Tree rule[20];
 Tree ensemble_tree[10];
@@ -30,13 +31,11 @@ char rule_buff_action[1000];
 %%
 
 "%{"*"%}"       ECHO;
-"%%"    {printf("On commence les regles\n");BEGIN(rules);}
+"%%\n"    {printf("On commence les regles\n");BEGIN(rules);}
 
 <rules>\[	{
 			printf("simples trucs entre crochets %s\n",yytext);
 			BEGIN(ensemble);
-			//ensemble_tree[cpt_ensemble]=new(ENSEMBLE,"[]");
-			//cpt_ensemble++;
 		}
 
 <rules>\[^	{printf("simples negatif trucs entre crochets %s\n",yytext);BEGIN(ensemble);}
@@ -45,11 +44,10 @@ char rule_buff_action[1000];
 			char c[2];
 			c[1]='\0';
 			sscanf(yytext,"\\%c",c);
-
 			ensemble_tree[cpt_ensemble]=new(CARACTERE,c);
 			cpt_ensemble++;	
 		}
-<rules>\]	{printf("Saw caractere spe: %s\n", yytext);}
+<rules>\]	{printf("Saw caractere spe: %s, ce n'est pas normal, arrêt\n", yytext);return -1;}
 <rules>\.       {
 			printf("Saw un point, on attend tout: %s\n", yytext);
 			ensemble_tree[cpt_ensemble]=new(CARACTERE,yytext);
@@ -58,8 +56,6 @@ char rule_buff_action[1000];
 <rules>\?       {
 			printf("Saw un ? donc ce qu'il y a avant n'est pas obligatoire : %s\n", yytext);
 			ensemble_tree[cpt_ensemble-1]=new_union(ensemble_tree[cpt_ensemble-1],NULL,INTERROGATION);
-			
-		
 		}
 <rules>\+       {
 			printf("Saw un + donc on repete ce qu'on a avant: %s\n", yytext);
@@ -70,18 +66,32 @@ char rule_buff_action[1000];
 			ensemble_tree[cpt_ensemble-1]=new_union(ensemble_tree[cpt_ensemble-1],NULL,ETOILE);
 			
 		}
-<rules>\|       {printf("Saw un | : %s\n", yytext);}
+<rules>\|       {
+			is_or=1;printf("Saw un | : %s\nOn empile ce qu'on a avant le OR", yytext);
+			ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble, UNION,0);
+			begin++;
+			cpt_ensemble++;
+				
+		}
 <rules>\(       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>\)       {printf("Saw caractere spe: %s\n", yytext);}
 <rules>[ a-zA-Z0-9]	{
-				printf("Saw a truc: %s\n", yytext);
+				printf("Saw a truc: %s, on le met dans la case %d\n", yytext,cpt_ensemble);
 				ensemble_tree[cpt_ensemble]=new(CARACTERE,yytext);
 				cpt_ensemble++;
 			}
-<rules>"%%"     {Machine M=ruleImachine(rule);fsmp(M);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
+<rules>"%%\n"     {Machine M=ruleImachine(rule);fsmp(M);printf("C'est la fin, on va dans le trailer\n");;BEGIN(trailer);}
 <rules>"\n"	{
-			
-			
+			if(is_or)
+			{
+				ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble, UNION,begin);
+				begin++;
+				cpt_ensemble++;
+				printf("Il faut d'abrod empiler les OR avant d'empiler la regle\n");
+				ensemble_tree[0]=empile_tree(ensemble_tree,&cpt_ensemble,OR,0);
+				begin++;
+				is_or=0;
+			}
 			rule[cpt_rules]=new(REGLE,rule_buff_action);	
 			attach_left_son(rule[cpt_rules],empile_tree(ensemble_tree,&cpt_ensemble, UNION,0));
 
@@ -100,9 +110,9 @@ char rule_buff_action[1000];
 <ensemble>\]	{
 			printf("Saw a ] donc fin d'ensemble : %s\n",yytext);
 			BEGIN(rules);
-			printf("On empile ce qu'on a deja\n");
+			printf("On empile deja ce qu'on a dans l'ensemble\n");
 			ensemble_tree[begin]=empile_tree(ensemble_tree,&cpt_ensemble,ENSEMBLE,begin);
-			printf("On a empilé dans la case %d\n",begin);
+			printf("On a empilé ce qu'on a dans l'ensemble dans la case %d\n",begin);
 			begin++;
 			cpt_ensemble++;
 		}
@@ -132,25 +142,7 @@ int main(void)
     Tree t;
     /* Call the lexer, then quit. */
     printf("coucou\n");
-    t=new(REGLE,"master Regles test je sais pas");
-/*    printf("On crée un fils\n");
-    new_left_son(t,OR,"pwet");
-    printf("Encore un\n");
-    new_left_son(left(t),CARACTERE,"A");
-    printf("\n%s\n",t->left->left->content);
-    printf("\npwet\n");	
-    printf("\nEt encore un\n");
-    new_right_son(left(t),CARACTERE,"B");
-    printf("On va afficher\n");
-    tree_show(t,0);
-    printf("\n");
-    printf("pwetpwet\n");
-    show(left(t));
-    printf("On fait un test\n");
-    char p[7] = "[u[o]u";
-    test(p);
-    printf("au revoir\n");
-*/
+    
     t=new(REGLE,"master Regle de test");
 
     Tree tt=new_intervalle("a","z");
