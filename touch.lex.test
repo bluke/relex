@@ -1,7 +1,7 @@
 %{ Copy that ! %}
 
 %%
-[a-zA-z]+	{lettres}
+[a-zA-Z]+	{lettres}
 [0-9]+	{chiffre}
 %%
 

@@ -173,5 +173,15 @@ int main(int argc, char* argv[])
 
     yylex();
 	fclose(out);
+
+
+	int i;
+	printf("\n\n#############  Affichage des arbres des règles #############\n");
+	for(i=0;i<cpt_rules;i++)
+	{
+		printf("########## RULE NUMBER %d ##########\n\n",i+1);
+		tree_show(rule[i],0);
+		printf("\n\n");
+	}
     return 0;
 }

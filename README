@@ -1,4 +1,24 @@
-This is a school project for a compilation course.
+This is a school project for a compilation course made by
+Lucas BEE and Luke BERTOT
 
 For suject see Projet_2011_2012.pdf(fr)
+
+Pour l'utilisation : 
+make
+./relex < fichier
+
+Le résultat se trouve dans relex.c
+
+Le projet n'est pas fini.
+Le trailer et le header sont copiés correctement dans le fichier relex.c
+L'automate non déterministe issu des règles est formé et se trouve en commentaire dans le fichier relex.c .
+Les arbres correspondants aux règles sont affichés en console à titre informatifs
+
+Le programme ne prend pas en charge les parenthèses ou la négation, mais prend en charge des exemples du type :
+[A-Za-z][0-9]*	{action}
+int|let	{action}
+\^\-\\	{action}
+
+Il faut une tabulation entre la regexp et l'action à réaliser.
+
 
